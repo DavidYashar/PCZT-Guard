@@ -94,7 +94,26 @@ async function main(): Promise<void> {
   if (sample) await loadSample(sample);
 }
 
+// A PCZT is kilobytes — our fixtures are 3.6 KB and the largest real one we have seen is
+// 12 KB. Refuse anything wildly larger *before* reading it into memory, so a hostile or
+// accidental multi-gigabyte drop cannot stall the tab. The browser would not execute the
+// file either way; this only stops us from trying to hold it.
+const MAX_PCZT_BYTES = 4 * 1024 * 1024;
+
+function formatSize(bytes: number): string {
+  if (bytes >= 1024 ** 3) return `${(bytes / 1024 ** 3).toFixed(1)} GB`;
+  if (bytes >= 1024 ** 2) return `${(bytes / 1024 ** 2).toFixed(1)} MB`;
+  return `${Math.round(bytes / 1024)} KB`;
+}
+
 async function loadFile(name: string, _placeholder: Uint8Array, file: File): Promise<void> {
+  if (file.size > MAX_PCZT_BYTES) {
+    showError(
+      `${name} is ${formatSize(file.size)}. A PCZT is a few kilobytes, so this is not one — ` +
+        `refusing to load it rather than holding ${formatSize(file.size)} in memory.`,
+    );
+    return;
+  }
   loaded = { name, bytes: new Uint8Array(await file.arrayBuffer()) };
   verify(loaded.name, loaded.bytes);
 }
