@@ -60,7 +60,11 @@ jobs:
 
       - uses: Swatinem/rust-cache@v2
 
-      - uses: jetli/wasm-pack-action@v0.4.0
+      # `jetli/wasm-pack-action` renamed across filesystems on current runners and failed with
+      # EXDEV. taiki-e/install-action downloads a prebuilt binary and caches it.
+      - uses: taiki-e/install-action@v2
+        with:
+          tool: wasm-pack@0.15.0
 
       - uses: actions/setup-node@v4
         with:
