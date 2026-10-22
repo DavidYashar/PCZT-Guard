@@ -9,7 +9,8 @@ use std::{fs, path::Path};
 
 use pczt::roles::verifier::Verifier;
 use xtask::{
-    address_deception, honest, inflated_fee, wallet_shaped, wallet_shaped_compacted, Payment,
+    address_deception, honest, inflated_fee, unlabeled, wallet_shaped, wallet_shaped_compacted,
+    Payment,
 };
 
 fn main() -> Result<(), Box<dyn std::error::Error>> {
@@ -19,15 +20,70 @@ fn main() -> Result<(), Box<dyn std::error::Error>> {
             let dir = args.get(1).map(String::as_str).unwrap_or("fixtures");
             write_fixtures(Path::new(dir))
         }
+        Some("forge") => {
+            let kind = args
+                .get(1)
+                .ok_or("usage: xtask forge <labelled|unlabelled|mismatch> <out.pczt>")?;
+            let out = args.get(2).ok_or("usage: xtask forge <kind> <out.pczt>")?;
+            forge(kind, Path::new(out))
+        }
         Some("describe") => {
             let path = args.get(1).ok_or("usage: xtask describe <file.pczt>")?;
             describe(&fs::read(path)?)
         }
         _ => {
-            eprintln!("usage:\n  xtask fixtures [dir]\n  xtask describe <file.pczt>");
+            eprintln!(
+                "usage:\n  xtask fixtures [dir]\n  \
+                 xtask forge <labelled|unlabelled|mismatch> <out.pczt>\n  \
+                 xtask describe <file.pczt>"
+            );
             Ok(())
         }
     }
+}
+
+/// Builds one PCZT of a named honesty class.
+///
+/// The three classes are what a signer has to be able to tell apart: a payment whose label
+/// matches where the money goes, a payment nobody can describe, and a payment whose label
+/// lies. Producing them is the only way to test a signer, because no real wallet will hand
+/// you the third one.
+fn forge(kind: &str, out: &Path) -> Result<(), Box<dyn std::error::Error>> {
+    let (payment, expectation) = match kind {
+        "labelled" => (
+            honest(),
+            "SAFE - the label names the address the value is committed to",
+        ),
+        "unlabelled" => (
+            unlabeled(),
+            "CANNOT VERIFY - an output carries value but no user_address, so nobody can describe it",
+        ),
+        "mismatch" => (
+            address_deception(),
+            "UNSAFE - the label names one address; the value is committed to another",
+        ),
+        other => {
+            return Err(format!(
+                "unknown kind {other:?}; use labelled, unlabelled or mismatch"
+            )
+            .into())
+        }
+    };
+
+    fs::write(out, &payment.bytes)?;
+    println!("kind:       {kind}");
+    println!("expected:   {expectation}");
+    match &payment.shown_address {
+        Some(shown) => println!("shown:      {}", shorten(shown)),
+        None => println!("shown:      (none)"),
+    }
+    println!("committed:  {}", shorten(&payment.committed_address));
+    println!(
+        "file:       {} ({} bytes)",
+        out.display(),
+        payment.bytes.len()
+    );
+    Ok(())
 }
 
 fn write_fixtures(dir: &Path) -> Result<(), Box<dyn std::error::Error>> {

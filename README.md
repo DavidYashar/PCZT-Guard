@@ -301,6 +301,21 @@ cargo run -p xtask -- fixtures fixtures
 This includes `ironwood-address-tampered.pczt`: a fully valid transaction that pays an attacker
 while the label says otherwise.
 
+To build a single PCZT of a named honesty class — useful for testing a signer, or for a demo —
+use `forge`. It prints what it made, so the terminal shows what the file actually claims:
+
+```console
+$ cargo run -p xtask -- forge mismatch /tmp/3-mismatch.pczt
+kind:       mismatch
+expected:   UNSAFE - the label names one address; the value is committed to another
+shown:      utest1x7d90s60qlc5pp29l8…hgsckh3d
+committed:  utest1tuxnkpkkgj9gapl62q…7ug6nw6a
+file:       /tmp/3-mismatch.pczt (3601 bytes)
+```
+
+The three classes are `labelled` (SAFE), `unlabelled` (CANNOT VERIFY) and `mismatch` (UNSAFE).
+No wallet will produce the third one, which is exactly why it has to be forged.
+
 ---
 
 ## The browser demo
