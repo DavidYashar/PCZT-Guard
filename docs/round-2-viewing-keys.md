@@ -142,7 +142,7 @@ viewing-key path lives in core and is never reachable from the browser build, wh
 ## 9. Post-review security fixes
 
 An independent review found three MEDIUM issues in this round's code; all are fixed with
-regression tests. See `PCZT-Guard-Design.md` §9 for the full account. The two that mattered:
+regression tests. See `PCZT-Guard-Design.md` §21 for the full account. The two that mattered:
 
 * **A proven alien output could be signed.** `allow_unlabeled_change` downgraded
   `Ownership::NotOurs` to a warning, and the signer mapped `--allow-unverified` onto that

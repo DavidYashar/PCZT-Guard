@@ -101,7 +101,7 @@ needs one caveat, recorded here because it costs an hour to rediscover:
   the installed LLVM was 22.1.8 — hence no local run.
 
 So on Linux or macOS this is a one-command affair; on Windows it needs an LLVM install matching
-the toolchain. **The fuzzing evidence in `PCZT-Guard-Design.md` §10 therefore comes from the
+the toolchain. **The fuzzing evidence in `PCZT-Guard-Design.md` §22 therefore comes from the
 deterministic harness above, which needs nothing but stable Rust** — and which is what found the
 defects.
 

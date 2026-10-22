@@ -324,7 +324,7 @@ No wallet will produce the third one, which is exactly why it has to be forged.
 
 ## The browser demo
 
-The same verifier as WebAssembly — **1.01 MB, 486 KB gzipped** — plus 8 KB of JavaScript.
+The same verifier as WebAssembly — **1.01 MB, 471 KB gzipped** — plus 8.6 KB of JavaScript.
 
 **Hosted:** <https://davidyashar.github.io/PCZT-Guard/> (GitHub Pages, built and deployed by
 [`pages.yml`](.github/workflows/pages.yml)). Deep links: `?sample=ironwood-honest` and
@@ -448,7 +448,7 @@ Not claims — commands you can run.
 | Real Testnet run | a real `zcash-devtool` PCZT was checked, signed, proved, broadcast and mined at height **4,525,306** (txid `e930ce6f…`) |
 | Differential fuzzing | exhaustive single-byte sweep plus 150,000 random mutations per seed, with the oracle *"anything reported SAFE must describe the identical transaction"* |
 | Fuzzing result | found **eight** single-byte mutations that reported `SAFE` while describing an **empty** transaction; fixed (`EmptyTransaction`, `UnknownNetwork`) and re-run clean |
-| Security review | three MEDIUM findings — including a terminal-escape attack that could repaint `UNSAFE` as `SAFE` — all fixed with regression tests |
+| Security review | four MEDIUM findings across two reviews — including a terminal-escape attack that could repaint `UNSAFE` as `SAFE`, and a deploy job holding more token than it needed — all fixed, with regression tests wherever a test can express them |
 | Robustness | random, truncated and mutated inputs never panic |
 | Browser | the built page was driven in a real browser and renders the mismatch correctly |
 

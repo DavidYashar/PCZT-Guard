@@ -720,7 +720,7 @@ Two operational traps worth recording:
 
 ---
 
-## 9. Security review (22 Oct 2026) and the fixes
+## 21. Security review (22 Oct 2026) and the fixes
 
 An independent security review of the workspace found three MEDIUM issues, all in the
 round-2 code. All three are fixed, with regression tests.
@@ -758,9 +758,24 @@ mile between a correct verdict and a human believing it.**
 Test count after the fixes: **75** (CLI 17, core unit 17, engine 28, robustness 4, signer 4,
 xtask 4, doctest 1). Clippy clean, `cargo fmt` applied, wasm still builds.
 
+### Found after the review
+
+Two gaps the review did not catch, recorded rather than quietly repaired:
+
+| Gap | Why it survived the review | Fix |
+|---|---|---|
+| `char::is_control()` catches C0/C1 but **not Unicode format characters** — the bidi overrides U+202A–202E, the isolates U+2066–2069, zero-width characters | The review checked the escaping it was told about (ANSI escapes); format characters are not control characters by Rust's own definition, so nothing looked wrong at the call site | `is_display_hazard()` in `text.rs`, applied by the CLI, the signer and the browser renderer alike |
+| The **deploy workflow held more authority than it used**: `pages: write` and `id-token: write` on every job, and third-party actions referenced by moving tags | Out of scope for a review of the Rust workspace — it was found by reviewing the deployment surface separately | Permissions scoped to the deploy job; the three third-party actions pinned to commit SHAs |
+
+The web surface also gained a 4 MiB upload cap, so an oversized file is refused before it is
+read rather than after.
+
+Test count at the time of writing: **81** (`cargo test --workspace`), up from the 75 snapshot
+above.
+
 ---
 
-## 10. Fuzzing (22 Oct 2026)
+## 22. Fuzzing (22 Oct 2026)
 
 Two harnesses, both in the repo and both opt-in; see `docs/fuzzing.md` for commands and the
 measured cost of each.
