@@ -284,7 +284,7 @@ canonical one) have hidden in exactly that step. Two specifics here:
 ### What is not there yet
 
 * No signed releases, no reproducible-build attestation, no `cargo auditable` metadata.
-* No independent human audit — see the top-level note in `PCZT-Guard-Design.md` §19.
+* No independent human audit — see the note under the header table in `PCZT-Guard-Design.md`.
 
 None of that is needed to *use* the tool from source, and the runtime properties that
 matter — no network, no keys, no telemetry, a small dependency surface compared with a full

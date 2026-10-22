@@ -9,9 +9,14 @@
 | **Track** | Core & Tooling ($15,000) |
 | **Team** | Solo (Rust + TypeScript) |
 | **Submission deadline** | **Oct 28 2026, 23:59 UTC** |
-| **Status** | Phase 2 — Design (awaiting sign-off) |
+| **Status** | Built, tested and deployed — submitted for the Core & Tooling track |
 | **License** | MIT OR Apache-2.0 (matches librustzcash) |
-| **Doc date** | Oct 18 2026 |
+| **Doc date** | Oct 18 2026, updated Oct 22 2026 (§21–§22 added after the build) |
+
+> **What has not happened.** No independent human auditor has reviewed this design or this
+> code. Two reviews were run against the implementation and the deployment (§21); their
+> findings and fixes are recorded there. Treat that as evidence, not assurance: the parts of
+> the argument that rest on reading `librustzcash` source are only as good as that reading.
 
 ---
 
