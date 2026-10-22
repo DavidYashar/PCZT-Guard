@@ -8,6 +8,17 @@ name: Pages
 on:
   push:
     branches: [main]
+    # Only redeploy when something the site is built from actually changed: a README edit
+    # should not recompile the wasm.
+    paths:
+      - "web-demo/**"
+      - "crates/pczt-guard-core/**"
+      - "crates/pczt-guard-wasm/**"
+      - "xtask/**"
+      - "Cargo.toml"
+      - "Cargo.lock"
+      - "rust-toolchain.toml"
+      - ".github/workflows/pages.yml"
   workflow_dispatch:
 
 permissions:

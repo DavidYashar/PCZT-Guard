@@ -8,6 +8,11 @@ checks: that the address shown to the user is the address the money is actually 
 
 [![CI](https://github.com/DavidYashar/PCZT-Guard/actions/workflows/ci.yml/badge.svg)](https://github.com/DavidYashar/PCZT-Guard/actions/workflows/ci.yml)
 
+**Try it now, in the browser, with nothing installed:**
+**[davidyashar.github.io/PCZT-Guard](https://davidyashar.github.io/PCZT-Guard/?sample=ironwood-address-tampered)**
+— that link opens the address-deception attack directly. It is the same verifier as the CLI,
+compiled to WebAssembly, and it runs entirely in your tab.
+
 ```console
 $ pczt-guard check payment.pczt
 CANNOT VERIFY
@@ -301,6 +306,12 @@ while the label says otherwise.
 ## The browser demo
 
 The same verifier as WebAssembly — **1.01 MB, 486 KB gzipped** — plus 8 KB of JavaScript.
+
+**Hosted:** <https://davidyashar.github.io/PCZT-Guard/> (GitHub Pages, built and deployed by
+[`pages.yml`](.github/workflows/pages.yml)). Deep links: `?sample=ironwood-honest` and
+`?sample=ironwood-address-tampered`.
+
+To run it yourself:
 
 ```bash
 cd web-demo
