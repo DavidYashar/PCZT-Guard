@@ -13,6 +13,9 @@ checks: that the address shown to the user is the address the money is actually 
 — that link opens the address-deception attack directly. It is the same verifier as the CLI,
 compiled to WebAssembly, and it runs entirely in your tab.
 
+**Prefer to watch first?** The [demo video](#demo-video) runs three PCZTs — honest, silent and
+tampered — through both the CLI and the browser.
+
 ```console
 $ pczt-guard check payment.pczt
 CANNOT VERIFY
@@ -35,6 +38,7 @@ CANNOT VERIFY
 - [Install](#install)
 - [Use](#use)
 - [The browser demo](#the-browser-demo)
+- [Demo video](#demo-video)
 - [Strengths](#strengths)
 - [Weaknesses](#weaknesses)
 - [How it was tested](#how-it-was-tested)
@@ -349,6 +353,29 @@ process you control, not in a tab.
 
 ---
 
+## Demo video
+
+[![PCZT Guard demo](docs/demo-screenshot.png)](https://github.com/DavidYashar/PCZT-Guard/releases/download/v0.1.0/pczt-guard-demo.mp4)
+
+**▶ [Watch the demo](https://github.com/DavidYashar/PCZT-Guard/releases/download/v0.1.0/pczt-guard-demo.mp4)**
+— hosted as a release asset, not in the tree: GitHub caps committed files at 100 MB, and a
+video in git would bloat every clone of a repository that exists to be audited.
+
+It runs three PCZTs through the CLI and then the same three through the browser:
+
+| File | The label inside the file | What the bytes actually pay | Verdict |
+|---|---|---|---|
+| `1-labelled.pczt` | names the address | the same address | `SAFE` |
+| `2-unlabelled.pczt` | absent — a silent output | nothing to check against | `CANNOT VERIFY` |
+| `3-mismatch.pczt` | names **a different address** | somebody else | `UNSAFE` |
+
+Case 3 is the attack from librustzcash#3155: the stock `pczt` signer signs it without complaint.
+All three are reproducible with
+`cargo run -p xtask -- forge <labelled|unlabelled|mismatch> out.pczt`; no wallet keys, funds or
+real addresses appear in the video.
+
+---
+
 ## Strengths
 
 - **It closes a real, open, unaddressed gap.** The check it performs is the one described in
@@ -364,7 +391,7 @@ process you control, not in a tab.
   to sign, without parsing prose.
 - **It has been attacked on purpose.** The failure mode it targets is reproduced as a test, and
   the verifier was then fuzzed and reviewed; the findings are recorded rather than only the wins.
-- **Small and dependency-thin.** About 4,600 lines of our own Rust across four crates — over
+- **Small and dependency-thin.** About 4,800 lines of our own Rust across four crates — over
   1,100 of them tests — with a dependency surface far smaller than a wallet's. That matters,
   because you have to trust the checker too.
 - **One engine, three shapes.** The CLI, the browser build and the library are the same core, so
@@ -416,7 +443,7 @@ Not claims — commands you can run.
 
 | Evidence | Detail |
 |---|---|
-| **77 tests**, `cargo fmt` and `cargo clippy -D warnings` clean | `cargo test --workspace` |
+| **81 tests**, `cargo fmt` and `cargo clippy -D warnings` clean | `cargo test --workspace` |
 | The attack, reproduced | [`xtask/tests/attack.rs`](xtask/tests/attack.rs) hands the tampered PCZT to the **stock** `pczt` Signer, which signs it; Guard refuses it |
 | Real Testnet run | a real `zcash-devtool` PCZT was checked, signed, proved, broadcast and mined at height **4,525,306** (txid `e930ce6f…`) |
 | Differential fuzzing | exhaustive single-byte sweep plus 150,000 random mutations per seed, with the oracle *"anything reported SAFE must describe the identical transaction"* |

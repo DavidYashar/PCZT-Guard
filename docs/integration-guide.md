@@ -138,11 +138,12 @@ proven.
 `pczt inspect` echoes `user_address` without checking it. A `--verify` flag would be one call
 to Guard, then printing `report.payments` with `report.findings` in a table beneath.
 
-## 6. FROST coordinators (Zkool, NoirWallet, OpenPGP-Wallet/frost-zec)
+## 6. FROST coordinators (Zkool, and any multi-party PCZT builder)
 
 A FROST coordinator is the highest-risk signer of all: several parties sign a PCZT that none
-of them built alone. Today each project writes its own ad-hoc checks — which is how three
-projects independently ended up hand-rolling "ZIP 374 signer checks".
+of them built alone. PCZT support across FROST tooling is uneven — Zkool coordinates signing
+over PCZTs, while Noir Wallet's adapter documents that it does not expose PCZT signing at all —
+so a group that does build PCZTs has no shared check to hand its signers.
 
 ```text
 coordinator: build PCZT  ->  send to signers

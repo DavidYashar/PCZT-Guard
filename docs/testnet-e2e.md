@@ -9,9 +9,9 @@ split across lines, pasting would concatenate them and fail.
 **Do not pause between steps 3 and 10.** A PCZT expires about four minutes after it is built.
 
 > **This runbook records a run that actually happened**, on Windows with PowerShell, so the
-> paths below are the ones that were used (`C:\zcash-e2e` for the scratch directory, the
-> repository where it was cloned). Step 0 sets them as variables — change those four values and
-> the rest of the runbook follows. The one Windows-specific hazard is that `>` writes UTF-16,
+> paths below are the ones that were used (`C:\zcash-e2e` for the scratch directory,
+> `C:\src\PCZT-Guard` for the clone). Step 0 sets them as variables — change those four values
+> and the rest of the runbook follows. The one Windows-specific hazard is that `>` writes UTF-16,
 > which is why step 7 pipes through `Set-Content` instead; both binaries also read UTF-16
 > correctly, so a redirect works too.
 
@@ -33,12 +33,12 @@ a **mnemonic file** (step 7). Nothing is typed by hand.
 ## Step 0 — set the paths
 
 ```powershell
-Set-Location C:\zcash-e2e; $repo = "C:\Users\yasha\vsCode\zcashProjectHackathon"; $wallet = "C:\zcash-e2e\w1"; $identity = "C:\zcash-e2e\id.txt"
+Set-Location C:\zcash-e2e; $repo = "C:\src\PCZT-Guard"; $wallet = "C:\zcash-e2e\w1"; $identity = "C:\zcash-e2e\id.txt"
 ```
 
-*Does:* stores three paths in variables so later commands need no editing. *Provide:* nothing.
-*Expect:* no output. If a later step says "cannot find path", this line was run in a different
-window.
+*Does:* stores three paths in variables so later commands need no editing. *Provide:* `$repo`
+must be wherever **you** cloned this repository. *Expect:* no output. If a later step says
+"cannot find path", this line was run in a different window.
 
 ---
 
