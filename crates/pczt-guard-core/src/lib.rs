@@ -8,7 +8,7 @@
 //! network. Optional information (an expected network, a viewing key, expected payments)
 //! makes the answer strictly stronger; nothing is assumed when it is absent.
 //!
-//! [PCZTs]: https://zips.z.cash/zip-0405
+//! [PCZTs]: https://github.com/zcash/librustzcash/tree/main/pczt
 //!
 //! # Example
 //!
