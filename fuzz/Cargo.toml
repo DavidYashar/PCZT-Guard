@@ -1,0 +1,23 @@
+[package]
+name = "pczt-guard-fuzz"
+version = "0.0.0"
+publish = false
+edition = "2021"
+
+[package.metadata]
+cargo-fuzz = true
+
+[dependencies]
+libfuzzer-sys = "0.4"
+pczt-guard-core = { path = "../crates/pczt-guard-core" }
+
+[[bin]]
+name = "verify"
+path = "fuzz_targets/verify.rs"
+test = false
+doc = false
+bench = false
+
+# Standalone workspace: this crate needs nightly `-Z` flags and must not drag the main
+# workspace onto a nightly toolchain.
+[workspace]

@@ -1,0 +1,7 @@
+target
+artifacts
+coverage
+
+# corpus/ is committed on purpose: it holds the real fixtures, which is what makes the
+# coverage-guided run worth anything. libFuzzer adds newly found inputs here as it explores;
+# those are useful seeds too, so they are not ignored.

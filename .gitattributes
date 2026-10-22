@@ -1,0 +1,7 @@
+# Normalise text to LF in the repository, so a Windows checkout and a Linux CI run agree.
+* text=auto eol=lf
+
+# A PCZT is a binary serialization. Line-ending normalisation would silently corrupt a
+# fixture, and the corruption would show up as a confusing parse error rather than a diff.
+*.pczt binary
+*.wasm binary

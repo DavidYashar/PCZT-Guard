@@ -1,0 +1,21 @@
+[package]
+name = "pczt-guard-wasm"
+version = "0.1.0"
+edition.workspace = true
+license.workspace = true
+rust-version.workspace = true
+description = "PCZT Guard in the browser: WebAssembly bindings"
+
+[lib]
+crate-type = ["cdylib", "rlib"]
+
+[dependencies]
+pczt-guard-core = { path = "../pczt-guard-core" }
+serde_json = "1"
+wasm-bindgen = "0.2"
+
+# `getrandom` refuses to compile for wasm32 unless it is told how to reach the platform's
+# randomness. PCZT Guard's core needs none, but a dependency of the elliptic-curve stack
+# does, and this feature selects the browser backend.
+[target.'cfg(target_arch = "wasm32")'.dependencies]
+getrandom = { version = "0.4", features = ["wasm_js"] }

@@ -1,0 +1,69 @@
+<!doctype html>
+<html lang="en">
+  <head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1" />
+    <title>PCZT Guard — check the cheque before you sign it</title>
+    <link rel="stylesheet" href="/src/style.css" />
+  </head>
+  <body>
+    <main class="page">
+      <header>
+        <h1>PCZT Guard</h1>
+        <p class="tagline">
+          Check a Zcash PCZT before you sign it. Everything runs in this tab — no network,
+          no keys, no telemetry.
+        </p>
+      </header>
+
+      <section class="controls" aria-label="Verification options">
+        <label>
+          Expected network
+          <select id="network">
+            <option value="">any</option>
+            <option value="test">testnet</option>
+            <option value="main">mainnet</option>
+          </select>
+        </label>
+        <label class="check">
+          <input type="checkbox" id="strict" />
+          strict (warnings block signing)
+        </label>
+        <label class="check">
+          <input type="checkbox" id="unlabeled" />
+          allow unlabeled change
+        </label>
+      </section>
+
+      <section
+        id="drop"
+        class="drop"
+        tabindex="0"
+        role="button"
+        aria-label="Drop a PCZT file here, or press Enter to choose one"
+      >
+        <p class="drop-title">Drop a <code>.pczt</code> file here</p>
+        <p class="drop-hint">or click to choose one</p>
+        <input type="file" id="file" accept=".pczt,application/octet-stream" hidden />
+      </section>
+
+      <section class="samples" aria-label="Sample transactions">
+        <span>Try a sample:</span>
+        <button data-sample="ironwood-honest">an honest payment</button>
+        <button data-sample="ironwood-address-tampered" class="danger">
+          a payment to the wrong address
+        </button>
+        <button data-sample="ironwood-fee-drain">a 0.99 ZEC fee</button>
+      </section>
+
+      <section id="report" class="report" aria-live="polite"></section>
+
+      <footer>
+        <span id="version">loading…</span>
+        <span>· offline by construction</span>
+      </footer>
+    </main>
+
+    <script type="module" src="/src/main.ts"></script>
+  </body>
+</html>
