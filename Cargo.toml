@@ -12,7 +12,7 @@ members = [
 edition = "2021"
 license = "MIT OR Apache-2.0"
 rust-version = "1.89"
-repository = "https://github.com/DavidYashar/pczt-guard"
+repository = "https://github.com/DavidYashar/PCZT-Guard"
 
 # Every Zcash crate is pinned to one librustzcash release set. Mixing the stable and
 # pre-release lines produces type mismatches; see PCZT-Guard-Design.md §10.

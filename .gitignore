@@ -5,3 +5,6 @@
 /web-demo/src/wasm
 /crates/pczt-guard-wasm/pkg
 /crates/pczt-guard-wasm/pkg-node
+
+# Local agent configuration: not part of the product, not published.
+/.github/agents/
