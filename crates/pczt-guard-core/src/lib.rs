@@ -31,7 +31,7 @@ mod value;
 pub use report::{
     Finding, FindingCode, Network, PaymentLine, Pool, Report, Role, Severity, Verdict,
 };
-pub use text::decode_text;
+pub use text::{decode_text, has_display_hazard, is_display_hazard};
 
 /// The PCZT encodings Guard can read. Re-exported so callers can assert on what they hold.
 pub use pczt::EncodingVersion;

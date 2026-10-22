@@ -17,6 +17,7 @@ use zcash_protocol::consensus::NetworkType;
 
 use crate::ownership::Ownership;
 use crate::report::{zec, Finding, FindingCode, PaymentLine, Pool, Role, Severity};
+use crate::text::has_display_hazard;
 
 /// One output, reduced to the facts stage 7 needs.
 pub(crate) struct LabeledOutput<'a> {
@@ -188,16 +189,18 @@ fn check_label(
     };
 
     // The label is free text from a file the signer did not write, and it is printed to a
-    // terminal. A control character in it is not a typo: an `ESC[2K` / `ESC[3A` pair erases
-    // the lines above and repaints the verdict, so the report can be made to read SAFE
-    // while it says UNSAFE. There is nothing to compare either, because no address contains
-    // control characters.
-    if shown.chars().any(char::is_control) {
+    // terminal and to a browser. A control character in it is not a typo: an `ESC[2K` /
+    // `ESC[3A` pair erases the lines above and repaints the verdict. Unicode format characters
+    // are the same class of problem with no visible trace: the bidirectional overrides can
+    // reorder the glyphs so the address reads differently from its bytes, and the zero-width
+    // characters can hide a difference. There is nothing to compare either way, because no
+    // address contains any of them.
+    if has_display_hazard(shown) {
         return finding(
             FindingCode::LabelControlCharacters,
             format!(
-                "user_address {shown:?} contains control characters, which can rewrite what a \
-                 terminal shows for this report"
+                "user_address {shown:?} contains control or invisible formatting characters, \
+                 which can reorder or hide what a reader sees"
             ),
         );
     }

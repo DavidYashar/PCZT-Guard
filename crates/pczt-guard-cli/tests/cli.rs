@@ -242,6 +242,23 @@ fn a_long_multibyte_label_does_not_panic() {
 }
 
 #[test]
+fn an_invisible_bidi_override_cannot_reorder_the_report() {
+    let path = fixture("bidi.pczt", &xtask::label_with_bidi_override().bytes);
+    let output = check(&path, &[]);
+
+    assert_eq!(output.status.code(), Some(1), "{}", stdout(&output));
+    let text = stdout(&output);
+    assert!(text.contains("LabelControlCharacters"), "{text}");
+    // The override must never reach the terminal as itself: it would reverse the glyphs after
+    // it, so the address on screen would not be the address in the file.
+    assert!(
+        !text.contains('\u{202E}') && !text.contains('\u{202C}'),
+        "a raw bidi control reached the terminal: {text:?}"
+    );
+    assert!(text.contains("\\u{202e}"), "it is shown escaped: {text}");
+}
+
+#[test]
 fn an_expired_pczt_is_refused() {
     let path = fixture("honest-expiry.pczt", &xtask::honest().bytes);
     let output = check(&path, &["--at-height", "9999999"]);

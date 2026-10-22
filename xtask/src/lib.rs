@@ -193,6 +193,28 @@ pub fn label_with_control_characters() -> Payment {
     )
 }
 
+/// A PCZT whose `user_address` uses a bidirectional override.
+///
+/// `U+202E` (right-to-left override) makes the following characters render in reverse order,
+/// so the address a reader sees is not the address in the bytes. It is a Unicode *format*
+/// character, not a control character, so `char::is_control` does not catch it.
+pub fn label_with_bidi_override() -> Payment {
+    payment_with_label(
+        alice(),
+        Some("utest1\u{202E}00ff\u{202C}deadbeef".to_string()),
+        100_000_000,
+    )
+}
+
+/// A PCZT whose `user_address` hides characters with zero-width joiners.
+pub fn label_with_zero_width() -> Payment {
+    payment_with_label(
+        alice(),
+        Some("utest1\u{200B}abc\u{200D}def".to_string()),
+        100_000_000,
+    )
+}
+
 /// A PCZT whose `user_address` is long and multi-byte, so displaying it must truncate on a
 /// character boundary rather than at a byte offset.
 pub fn label_long_multibyte() -> Payment {

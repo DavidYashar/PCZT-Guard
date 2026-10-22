@@ -253,12 +253,22 @@ function shorten(address: string): string {
   return address.length <= 44 ? address : `${address.slice(0, 24)}…${address.slice(-12)}`;
 }
 
+// Characters that reorder or hide what a reader sees without appearing themselves: C0/C1
+// controls, the bidirectional overrides and isolates, and the zero-width formatters. HTML
+// escaping leaves all of them intact, so an address could render in a different order than
+// its bytes. Mirrors `pczt_guard_core::is_display_hazard`, which also flags them as UNSAFE.
+const DISPLAY_HAZARD =
+  /[\u0000-\u001F\u007F-\u009F\u00AD\u061C\u180E\u200B-\u200F\u202A-\u202E\u2060-\u206F\uFEFF\uFFF9-\uFFFB]|[\u{E0001}\u{E0020}-\u{E007F}]/gu;
+
 function escape(text: string): string {
-  return text.replace(
-    /[&<>"']/g,
-    (character) =>
-      ({ "&": "&amp;", "<": "&lt;", ">": "&gt;", '"': "&quot;", "'": "&#39;" })[character] ?? character,
-  );
+  return text
+    .replace(DISPLAY_HAZARD, (c) => `\\u{${(c.codePointAt(0) ?? 0).toString(16)}}`)
+    .replace(
+      /[&<>"']/g,
+      (character) =>
+        ({ "&": "&amp;", "<": "&lt;", ">": "&gt;", '"': "&quot;", "'": "&#39;" })[character] ??
+        character,
+    );
 }
 
 void main();

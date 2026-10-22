@@ -111,7 +111,8 @@ pub enum FindingCode {
     SelfPaymentLabeledExternal,
     /// `user_address` is an address for a different network than the PCZT.
     LabelNetworkMismatch,
-    /// `user_address` contains control characters, which can rewrite a terminal report.
+    /// `user_address` contains control or invisible formatting characters, which a terminal
+    /// or a browser may act on (repaint the verdict, or reorder the glyphs) rather than show.
     LabelControlCharacters,
     /// A spend's Merkle witness does not lead to the bundle's anchor.
     AnchorMismatch,

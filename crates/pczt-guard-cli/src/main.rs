@@ -387,10 +387,19 @@ fn zec(zats: u64) -> String {
 ///
 /// `user_address` comes from a file the signer did not write, and the terminal is where the
 /// verdict is read. A raw `ESC[2K` / `ESC[3A` pair erases the lines above and repaints the
-/// verdict, so every control character is escaped rather than printed. This is defence in
-/// depth: [`pczt_guard_core`] also reports a label containing one as `UNSAFE`.
+/// verdict, and a bidirectional override reorders the glyphs so an address reads differently
+/// from its bytes. Both are escaped rather than printed. This is defence in depth:
+/// [`pczt_guard_core`] also reports such a label as `UNSAFE`.
 fn printable(text: &str) -> String {
-    text.chars().flat_map(char::escape_debug).collect()
+    text.chars()
+        .map(|c| {
+            if pczt_guard_core::is_display_hazard(c) {
+                format!("\\u{{{:x}}}", u32::from(c))
+            } else {
+                c.to_string()
+            }
+        })
+        .collect()
 }
 
 /// Shortens a long address for display, on character boundaries so a multi-byte character

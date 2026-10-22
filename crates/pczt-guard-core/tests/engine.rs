@@ -249,6 +249,28 @@ fn a_label_with_control_characters_is_unsafe() {
 }
 
 #[test]
+fn a_bidi_override_in_the_label_is_unsafe() {
+    // `U+202E` is a Unicode *format* character, so `char::is_control` misses it, and HTML
+    // escaping leaves it intact. It reverses what a reader sees, which is how a shown address
+    // can differ from the address in the bytes.
+    for payment in [
+        xtask::label_with_bidi_override(),
+        xtask::label_with_zero_width(),
+    ] {
+        let report = verify(&payment.bytes, &Options::default()).expect("the fixture is a PCZT");
+        assert_eq!(report.verdict, Verdict::Unsafe, "{:#?}", report.findings);
+        assert!(
+            report
+                .findings
+                .iter()
+                .any(|f| f.code == FindingCode::LabelControlCharacters),
+            "{:#?}",
+            report.findings
+        );
+    }
+}
+
+#[test]
 fn a_proven_alien_output_survives_the_unlabeled_flag() {
     // `allow_unlabeled_change` exists to accept outputs nobody could check. A viewing key
     // *did* check this one and found it pays somebody else, so no flag may soften it.
